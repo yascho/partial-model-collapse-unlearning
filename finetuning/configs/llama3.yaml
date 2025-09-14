@@ -1,0 +1,42 @@
+defaults:
+  - override hydra/launcher: submitit_slurm
+
+hparams:
+  device: "cuda"
+  model: "meta-llama/Llama-3.2-3B-Instruct"
+  system_prompt: You are a helpful assistant.
+  date_string: "10 Apr 2025"
+  max_length: 256
+
+  dataset: "full"
+
+  training:
+    seed: 0
+    batch_size: 8
+    gradient_accumulation_steps: 2
+    learning_rate: 1e-5
+    num_epochs: 5
+    weight_decay: 0.01
+    gradient_checkpointing: True
+
+hydra:  
+  sweep:
+    dir: ../models/finetuned/llama3/${hparams.training.seed}
+    subdir: .
+  sweeper:
+    params:
+      hparams.training.seed: range(1)
+
+  launcher:
+    submitit_folder: ${hydra.sweep.dir}/.submitit/%j
+    timeout_min: 300
+    gres: gpu:1
+    mem_gb: 80
+    partition: gpu_h100
+    qos: default
+    cpus_per_task: 1
+    tasks_per_node: 1
+    name: finetuning
+    _target_: hydra_plugins.hydra_submitit_launcher.submitit_launcher.SlurmLauncher
+    signal_delay_s: 0
+    max_num_timeout: 0
