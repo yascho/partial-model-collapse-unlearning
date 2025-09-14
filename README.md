@@ -98,7 +98,7 @@ Please cite our paper if you use this code in your own work:
 ```
 
 ## Acknowledgements
-This codebase builds upon the [TOFU](https://github.com/locuslab/tofu) unlearning repository, adapted to demonstrate the effectiveness of our approach. The core principles proposed in our paper are implemented in `unlearning/trainer.py` and `unlearning/pmc.py`. Note that we consider unlearning as an alignment task and follow a different evaluation approach. We believe our evaluation represents an important first step to evaluate collapse-based machine unlearning and invite the community to assess our approach under further aspects.
+This codebase builds upon the [TOFU](https://github.com/locuslab/tofu) unlearning repository, adapted to demonstrate the effectiveness of our approach. The core principles proposed in our paper are implemented in `unlearning/unlearning_trainer.py` and `unlearning/pmc.py`. Note that we consider unlearning as an alignment task and follow a different evaluation approach. We believe our evaluation represents an important first step to evaluate collapse-based machine unlearning and invite the community to assess our approach under further aspects.
 
 ## Contact
 For questions and feedback please contact:
