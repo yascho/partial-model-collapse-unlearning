@@ -38,7 +38,7 @@ class UnlearningTrainer(Trainer):
 
     def compute_loss(self, model, inputs,
                      return_outputs=False, num_items_in_batch=None):
-        (forget_inputs, retain_inputs, forget_idx,
+        (forget_inputs, retain_inputs, alignment_inputs, forget_idx,
             forget_questions, forget_answers, model_answers) = inputs
 
         # unlearning losses
@@ -101,24 +101,39 @@ class UnlearningTrainer(Trainer):
                 num_samples=num_samples,
             )
 
-            self.track_generations(forget_idx, forget_questions,
-                                   forget_answers, model_answers,
-                                   scores, picked_scores)
             collapse_loss = self.compute_model_loss(model, generation_inputs)
+            retain_loss = self.compute_model_loss(model, retain_inputs)
+
+            loss = collapse_loss
+            loss += self.hparams['lambda_unlearning'] * retain_loss
+
+            if self.hparams['align']:
+                # discount_factor == average reward score of selected samples
+                discount_factor = [self.sampled_data[idx]['score']
+                                   for idx in forget_idx]
+                discount_factor = np.mean(discount_factor)
+
+                alignment_loss = torch.tensor(0.0, device=retain_loss.device)
+                if discount_factor > 0:
+                    alignment_loss = self.compute_model_loss(
+                        model, alignment_inputs)
+                    alignment_loss *= discount_factor
+
+                loss += self.hparams['lambda_alignment'] * alignment_loss
+
+                self.track_loss("4_alignment_loss (↓)", alignment_loss)
 
             # forget loss just for tracking
             with torch.no_grad():
                 forget_loss = self.compute_model_loss(model, forget_inputs)
 
-            retain_loss = self.compute_model_loss(model, retain_inputs)
-
-            loss = self.hparams['lambda'] * retain_loss + collapse_loss
-
             self.track_loss("0_loss (↓)", loss)
             self.track_loss("1_retain_loss (↓)", retain_loss)
             self.track_loss("2_forget_loss (↑)", forget_loss)
             self.track_loss("3_collapse_loss (↓)", collapse_loss)
-
+            self.track_generations(forget_idx, forget_questions,
+                                   forget_answers, model_answers,
+                                   scores, picked_scores)
         else:
             raise ValueError(f"Unrecognized loss function: {self.loss}. ")
 

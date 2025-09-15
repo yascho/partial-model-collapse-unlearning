@@ -9,6 +9,9 @@ from hydra.core.hydra_config import HydraConfig
 from huggingface_hub import login
 from dotenv import load_dotenv
 from exception_handling import print_exceptions
+import logging
+
+log = logging.getLogger(__name__)
 
 
 @print_exceptions

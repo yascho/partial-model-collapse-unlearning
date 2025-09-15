@@ -3,6 +3,7 @@ import torch
 import time
 import random
 from tqdm.auto import tqdm
+import wandb
 
 from model import *
 from dataloader import *
@@ -67,6 +68,9 @@ class Experiment():
 
         end = time.time()
         inference_time = end - start
+
+        wandb.log({"unlearn_quality": scores['unlearn_quality']})
+        wandb.log({"utility": scores['utility']})
 
         result = {
             "model": hparams['model'],

@@ -24,20 +24,46 @@ We frame unlearning as an alignment task and introduce a novel perspective inspi
 
 This repository provides code to perform PMC-unlearning for LLMs as described in our recent <a href='https://arxiv.org/abs/2507.04219'>preprint</a>.
 
-**Disclaimer**: This repository is part of ongoing research efforts; the code, hypyerparameters and empirical results provided are preliminary and remain subject to revisions. We will provide additional supplemental material for reproducing results from our preprint at a later time. Feedback is greatly appreciated.
+**Disclaimer**: This repository is part of ongoing research efforts; the code, hyperparameters and empirical results provided are preliminary and remain subject to revisions. We will provide additional supplemental material for reproducing results from our preprint at a later time. Feedback is greatly appreciated.
+
+## Partial model collapse with alignment
+
+**PMC-unlearning** performs collapse-based unlearning, that is driving the model’s answers for forget questions away from those of the original model while preserving model utility. Note that the desired model behavior after unlearning is inherently application-dependent. What constitutes an acceptable response may vary across use cases. In practice, we observe that PMC-unlearning frequently converges toward response patterns that fall into two broad categories: (i) hallucinations, or (ii) generic refusals that indicate the absence of knowledge. Examples of the latter include:
+
+> I don't have any information available.
+> To be honest, I couldn't find any information.
+> There is no public information.
+> This information is not available at this time.
+> Specific details are not available.
+
+Interestingly, such refusal-style behaviors emerge despite the fact that the reward function does not explicitly model them. Effectively enforcing such responses via the reward function directly is nontrivial, as it would require a semantic notion of acceptable refusal behavior rather than simple lexical overlap.
+
+To address this, we propose **PMC-alignment**, which uses an auxiliary loss that semantically biases the model toward desirable refusal responses. Concretely, for forget questions, the model is finetuned on randomly sampled answers from a set of desirable responses (e.g., "I don't have any information available."). Formally, the unlearning objective becomes:
+
+$$ \mathcal{L}_{collapse} + \gamma \mathcal{L}_{alignment}$$
+
+where $\mathcal{L}_{collapse}$ denotes the collapse loss driving the model away from answers to unlearn, and $\mathcal{L}_{alignment}$ denotes the alignment term encouraging convergence toward responses semantically similar to the onces in the set of desirable responses. The discount factor $\gamma$ corresponds to the average reward score of the batch, nullifying the alignment term once the model collapsed to unlearned responses.
+
+Intuitively, the collapse loss enforces unlearning by ensuring divergence, while the alignment loss provides a semantic anchor that guides the output distribution toward desirable answers. Note that the alignment loss alone is typically not enough: applying it in isolation can reduce both unlearning effectiveness and model utility, since it may push the model toward low-likelihood responses under its current (conditional) distribution. By combining the two, PMC-alignment gradually increases the likelihood of acceptable refusal responses until they are sampled and then reinforced by the collapse loss. Once an acceptable response (with high reward) is generated, it is retained for subsequent unlearning steps.
+
+Notably, this dynamic proves highly effective in practice: PMC-alignment reliably converges to producing refusal-style answers semantically similar to the desirable responses (like "I don't have any information available") for forget and paraphrased-forget questions, while maintaining high utility in general.
+
 
 ## Empirical results
 
+
 The following table presents preliminary empirical results for the models obtained using the configurations available in this repository. Currently supported models are `Phi-1.5` and `Llama-3.2-*-Instruct`. 
 
-| Models | Method |  Unlearn quality ($\uparrow$) | Utility ($\uparrow$) | Unlearning runtime |
+| Models | Method |  Unlearn quality ($\uparrow$) | Utility ($\uparrow$) | Runtime (H100) |
 | - | -- | -- | -- | -- |
 | Phi-1.5 | Vanilla model  | 58.23% | 64.0%  | |
 | |   Finetuned model | 38.3% <sub><sup>$\pm$ 0.12</sup></sub> | 70.0% <sub><sup>$\pm$ 0.98</sup></sub> | |
-|  |   **PMC-unlearned** | **95.6%**  <sub><sup>$\pm$ 0.57</sup></sub> | **69.0%**  <sub><sup>$\pm$ 1.34</sup></sub> | 40 min <sub><sup>$\pm$ 2</sup></sub> |
+|  |   **PMC-unlearning** | **95.6%**  <sub><sup>$\pm$ 0.57</sup></sub> | 69.0%  <sub><sup>$\pm$ 1.34</sup></sub> | 40 min <sub><sup>$\pm$ 2</sup></sub> |
+|  |   **PMC-alignment** | 94.76%  <sub><sup>$\pm$ 0.2</sup></sub> | **71.0%**  <sub><sup>$\pm$ 0.86</sup></sub> | 26 min <sub><sup>$\pm$ 2</sup></sub> |
 | Llama-3.2-3B-Instruct | Vanilla model | 74.68%  | 71.0%  |  | 
 |  | Finetuned model | 35.42% <sub><sup>$\pm$ 0.23</sup></sub> | 91% <sub><sup>$\pm$ 0.73</sup></sub> |  | 
-|  | **PMC-unlearned** | **99.15%** <sub><sup>$\pm$ 0.3</sup></sub> | **84.0%** <sub><sup>$\pm$ 2.72 | 30 min  <sub><sup>$\pm$ 1</sup></sub> | 
+|  | **PMC-unlearning** | **99.15%** <sub><sup>$\pm$ 0.3</sup></sub> | 84.0% <sub><sup>$\pm$ 2.72 | 30 min  <sub><sup>$\pm$ 1</sup></sub> | 
+|  | **PMC-alignment** | 98.38% <sub><sup>$\pm$ 0.64</sup></sub> | **85.0%** <sub><sup>$\pm$ 2.51 | 35 min  <sub><sup>$\pm$ 15</sup></sub> | 
 
 You can find more results in our <a href='https://arxiv.org/abs/2507.04219'>preprint</a>.
 
@@ -47,11 +73,13 @@ The following hyperparameters are central for optimizing the trade-off between u
 
 - `num_epochs`: Number of unlearning epochs.  
 - `num_samples`: Number of candidate responses sampled for each forget question.  
-- `lambda`: Trade-off parameter balancing the retain loss and the collapse loss (the loss on the sampled synthetic responses).  
+- `lambda_unlearning`: Trade-off parameter balancing the retain loss and the collapse loss (the loss on the sampled synthetic responses).  
 - `min_len`: Synthetic responses with length below this minimal response length are penalized in the reward function.
 
 
-## Unlearning instructions
+## Usage instructions
+
+First finetune models on the ground truth. Then either execute **PMC-unlearning** or **PMC-alignment**.
 
 **1. Finetuning on full dataset**
 ```
@@ -61,15 +89,26 @@ python3 main.py -m -cd=configs -cn=llama3
 ```
 This will finetune vanilla models on the full dataset and store resulting models in `models/finetuned/`.
 
-**2. Unlearning**
+**2.1 PMC-unlearning**
 
 ```
 cd unlearning
-python3 main.py -m -cd=configs -cn=PMC-phi
-python3 main.py -m -cd=configs -cn=PMC-llama3
+python3 main.py -m -cd=configs -cn=PMC-unlearn-phi
+python3 main.py -m -cd=configs -cn=PMC-unlearn-llama3
 ```
 
 This will apply PMC-unlearning to finetuned models and store resulting models in `models/unlearned/`.
+
+**2.2 PMC-alignment**
+
+```
+cd unlearning
+python3 main.py -m -cd=configs -cn=PMC-align-phi
+python3 main.py -m -cd=configs -cn=PMC-align-llama3
+```
+
+This will apply PMC-alignment to finetuned models and store resulting models in `models/aligned/`.
+
 
 ## Installation
 Instructions for dependencies and configurations before running code:
