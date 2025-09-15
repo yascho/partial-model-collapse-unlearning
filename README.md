@@ -40,7 +40,7 @@ Interestingly, such refusal-style behaviors emerge despite the fact that the rew
 
 To address this, we propose **PMC-alignment**, which uses an auxiliary loss that semantically biases the model toward desirable refusal responses. Concretely, for forget questions, the model is finetuned on randomly sampled answers from a set of desirable responses (e.g., "I don't have any information available."). Formally, the unlearning objective becomes:
 
-$$ \mathcal{L}_{collapse} + \gamma \mathcal{L}_{alignment}$$
+$$ \mathcal{L}_{collapse} + (1-\gamma) \mathcal{L}_{alignment}$$
 
 where $L_{collapse}$ denotes the collapse loss driving the model away from answers to unlearn, and $L_{alignment}$ denotes the alignment term encouraging convergence toward responses semantically similar to the onces in the set of desirable responses. The discount factor $\gamma$ corresponds to the average reward score of the batch, nullifying the alignment term once the model collapsed to unlearned responses.
 
