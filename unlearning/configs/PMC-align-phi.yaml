@@ -1,0 +1,81 @@
+defaults:
+  - override hydra/launcher: submitit_slurm
+
+hparams:
+  device: "cuda"
+
+  tokenizer_model: "microsoft/phi-1_5"
+  model: "../models/finetuned/phi/"
+  checkpoint: "checkpoint-625"
+  question_start_tag: "Question: "
+  question_end_tag: "\n"
+  answer_tag: "Answer: "
+  max_length: 200
+  batch_size_inference: 256
+  full_eval: False
+
+  unlearning: True
+  unlearning_loss: "pmc"
+  pmc_selection: "rouge_reward"
+
+  lambda_unlearning: 1.5
+  top_p: 0.95
+  temperature: 1.25
+  num_samples: 5
+  num_epochs: 40
+  min_len: 5
+
+  align: True
+  lambda_alignment: 0.5
+  alignment_responses: [
+    "This information is not available.",
+    "This information is not available at this time.",
+    "Specific details are not available.",
+    "Specific details are not available at this time.",
+    "I don't have that information.",
+    "I don't have that information available.",
+    "I don't have that information at the moment.",
+    "I don't have that information right now.",
+    "I don't have that data.",
+    "I don't have that data available.",
+    "I don't have that data at the moment.",
+    "I don't have that data right now.",
+    "I'm sorry, I don't have that information.",
+    "I'm sorry, I don't have that information available.",
+    "I'm sorry, I don't have that information at the moment.",
+    "I'm sorry, I don't have that information right now.",
+    "I'm sorry, I don't have that data.",
+    "I'm sorry, I don't have that data available.",
+    "I'm sorry, I don't have that data at the moment.",
+    "I'm sorry, I don't have that data right now.",
+  ]
+
+  batch_size: 16
+  gradient_accumulation_steps: 4
+  learning_rate: 1e-5
+  weight_decay: 0.01
+  gradient_checkpointing: False
+
+  save_model: True
+  seed: 0
+  split: 10
+  logging: False
+
+hydra:  
+  sweep:
+    dir: ../models/aligned/phi/${hparams.seed}/
+    subdir: . 
+
+  launcher:
+    submitit_folder: ../models/aligned/phi/submitit
+    timeout_min: 80
+    gres: gpu:1
+    mem_gb: 40
+    partition: gpu_h100
+    qos: default
+    cpus_per_task: 1
+    tasks_per_node: 1
+    name: PMC-align-phi
+    _target_: hydra_plugins.hydra_submitit_launcher.submitit_launcher.SlurmLauncher
+    signal_delay_s: 0
+    max_num_timeout: 0

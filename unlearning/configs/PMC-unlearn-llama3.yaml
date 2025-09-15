@@ -1,0 +1,59 @@
+defaults:
+  - override hydra/launcher: submitit_slurm
+
+hparams:
+  device: "cuda"
+
+  tokenizer_model: "meta-llama/Llama-3.2-3B-Instruct"
+  model: "../models/finetuned/llama3/"
+  checkpoint: "checkpoint-1250"
+
+  system_prompt: You are a helpful assistant.
+  date_string: "10 Apr 2025"
+
+  max_length: 200
+  batch_size_inference: 200
+  full_eval: False
+
+  unlearning: True
+  unlearning_loss: "pmc"
+  pmc_selection: "rouge_reward"
+
+  lambda_unlearning: 1.25
+  top_p: 0.95
+  temperature: 0.9
+  num_samples: 20
+  num_epochs: 30
+  min_len: 0
+
+  align: False
+
+  batch_size: 8
+  gradient_accumulation_steps: 2
+  learning_rate: 1e-5
+  weight_decay: 0.01
+  gradient_checkpointing: True
+
+  save_model: True
+  seed: 0
+  split: 10
+  logging: False
+
+hydra:  
+  sweep:
+    dir: ../models/unlearned/llama3/${hparams.seed}/
+    subdir: . 
+
+  launcher:
+    submitit_folder: ../models/unlearned/llama3/submitit
+    timeout_min: 80
+    gres: gpu:1
+    mem_gb: 40
+    partition: gpu_h100
+    qos: default
+    cpus_per_task: 1
+    tasks_per_node: 1
+    name: PMC-unlearn-llama3
+    _target_: hydra_plugins.hydra_submitit_launcher.submitit_launcher.SlurmLauncher
+    signal_delay_s: 0
+    max_num_timeout: 0

@@ -30,11 +30,11 @@ This repository provides code to perform PMC-unlearning for LLMs as described in
 
 **PMC-unlearning** performs collapse-based unlearning, that is driving the model’s answers for forget questions away from those of the original model while preserving model utility. Note that the desired model behavior after unlearning is inherently application-dependent. What constitutes an acceptable response may vary across use cases. In practice, we observe that PMC-unlearning frequently converges toward response patterns that fall into two broad categories: (i) hallucinations, or (ii) generic refusals that indicate the absence of knowledge. Examples of the latter include:
 
-> I don't have any information available.
-> To be honest, I couldn't find any information.
-> There is no public information.
-> This information is not available at this time.
-> Specific details are not available.
+> I don't have any information available.  
+> To be honest, I couldn't find any information.  
+> There is no public information.  
+> This information is not available at this time.  
+> Specific details are not available.  
 
 Interestingly, such refusal-style behaviors emerge despite the fact that the reward function does not explicitly model them. Effectively enforcing such responses via the reward function directly is nontrivial, as it would require a semantic notion of acceptable refusal behavior rather than simple lexical overlap.
 
@@ -42,7 +42,7 @@ To address this, we propose **PMC-alignment**, which uses an auxiliary loss that
 
 $$ \mathcal{L}_{collapse} + \gamma \mathcal{L}_{alignment}$$
 
-where $\mathcal{L}_{collapse}$ denotes the collapse loss driving the model away from answers to unlearn, and $\mathcal{L}_{alignment}$ denotes the alignment term encouraging convergence toward responses semantically similar to the onces in the set of desirable responses. The discount factor $\gamma$ corresponds to the average reward score of the batch, nullifying the alignment term once the model collapsed to unlearned responses.
+where $L_{collapse}$ denotes the collapse loss driving the model away from answers to unlearn, and $L_{alignment}$ denotes the alignment term encouraging convergence toward responses semantically similar to the onces in the set of desirable responses. The discount factor $\gamma$ corresponds to the average reward score of the batch, nullifying the alignment term once the model collapsed to unlearned responses.
 
 Intuitively, the collapse loss enforces unlearning by ensuring divergence, while the alignment loss provides a semantic anchor that guides the output distribution toward desirable answers. Note that the alignment loss alone is typically not enough: applying it in isolation can reduce both unlearning effectiveness and model utility, since it may push the model toward low-likelihood responses under its current (conditional) distribution. By combining the two, PMC-alignment gradually increases the likelihood of acceptable refusal responses until they are sampled and then reinforced by the collapse loss. Once an acceptable response (with high reward) is generated, it is retained for subsequent unlearning steps.
 
