@@ -42,7 +42,7 @@ To address this, we propose **PMC-alignment**, which uses an auxiliary loss that
 
 $$ \mathcal{L}_{collapse} + (1-\gamma) \mathcal{L}_{alignment}$$
 
-where $L_{collapse}$ denotes the collapse loss driving the model away from answers to unlearn, and $L_{alignment}$ denotes the alignment term encouraging convergence toward responses semantically similar to the onces in the set of desirable responses. The discount factor $\gamma$ corresponds to the average reward score of the batch, nullifying the alignment term once the model collapsed to unlearned responses.
+where $L_{collapse}$ denotes the collapse loss driving the model away from answers to unlearn, and $L_{alignment}$ denotes the alignment term encouraging convergence toward responses semantically similar to the ones in the set of desirable responses. The discount factor $\gamma$ corresponds to the average reward score of the batch, nullifying the alignment term once the model collapsed to unlearned responses.
 
 Intuitively, the collapse loss enforces unlearning by ensuring divergence, while the alignment loss provides a semantic anchor that guides the output distribution toward desirable answers. Note that the alignment loss alone is typically not enough: applying it in isolation can reduce both unlearning effectiveness and model utility, since it may push the model toward low-likelihood responses under its current (conditional) distribution. By combining the two, PMC-alignment gradually increases the likelihood of acceptable refusal responses until they are sampled and then reinforced by the collapse loss. 
 
