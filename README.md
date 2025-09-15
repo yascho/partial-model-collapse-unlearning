@@ -118,7 +118,7 @@ python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 ```
-Additionally set `HUGGINGFACE_LOGIN_TOKEN` (in environment.env)[environment.env].
+Additionally set `HUGGINGFACE_LOGIN_TOKEN` in each `environment.env`.
 
 This code was tested with Python 3.11.9, pip 24.0, PyTorch 2.3.1+cu118, and CUDA 11.8 on a NVIDIA H100 GPU.
 
