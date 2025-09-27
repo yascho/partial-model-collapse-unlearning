@@ -38,10 +38,10 @@ The following table presents preliminary empirical results for the models obtain
 | - | -- | -- | -- | -- |
 | Phi-1.5 | Vanilla model  | 58.23% | 64.0%  | |
 | |   Finetuned model | 38.3% <sub><sup>$\pm$ 0.12</sup></sub> | 70.0% <sub><sup>$\pm$ 0.98</sup></sub> | |
-|  |   **PMC-unlearning** | **95.6%**  <sub><sup>$\pm$ 0.57</sup></sub> | 69.0%  <sub><sup>$\pm$ 1.34</sup></sub> | 40 min <sub><sup>$\pm$ 2</sup></sub> |
+|  |   **PMC-unlearning** | 95.6%  <sub><sup>$\pm$ 0.57</sup></sub> | 69.0%  <sub><sup>$\pm$ 1.34</sup></sub> | 40 min <sub><sup>$\pm$ 2</sup></sub> |
 | Llama-3.2-3B-Instruct | Vanilla model | 74.68%  | 71.0%  |  | 
 |  | Finetuned model | 35.42% <sub><sup>$\pm$ 0.23</sup></sub> | 91% <sub><sup>$\pm$ 0.73</sup></sub> |  | 
-|  | **PMC-unlearning** | **99.15%** <sub><sup>$\pm$ 0.3</sup></sub> | 84.0% <sub><sup>$\pm$ 2.72 | 30 min  <sub><sup>$\pm$ 1</sup></sub> | 
+|  | **PMC-unlearning** | 99.15% <sub><sup>$\pm$ 0.3</sup></sub> | 84.0% <sub><sup>$\pm$ 2.72 | 30 min  <sub><sup>$\pm$ 1</sup></sub> | 
 
 You can find more results in our <a href='https://arxiv.org/abs/2507.04219'>preprint</a>.
 
