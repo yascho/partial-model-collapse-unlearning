@@ -15,7 +15,6 @@ def load_datasets(hparams):
         forget_split = 'forget' + f"{hparams['split']:02}"
         retain_split = 'retain' + f"{100-hparams['split']}"
 
-        print(f"Loading dataset split: {retain_split} and {forget_split}")
         datasets['forget'] = load_dataset("locuslab/TOFU", forget_split)
         datasets['forget_paraphrased'] = load_dataset(
             "locuslab/TOFU", forget_split + "_perturbed")
@@ -67,13 +66,13 @@ class UnlearningDataset(Dataset):
         return len(self.forget_data)
 
     def __getitem__(self, idx):
-
         result = []
-        for data_type in ["forget", "alignment", "retain"]:
 
-            if data_type in ["forget", "alignment"]:
+        for data_type in ["forget", "retain"]:
+
+            if data_type == "forget":
                 data = self.forget_data
-            elif data_type == "retain":
+            else:
                 data = self.retain_data
                 randint = torch.randint(0, len(self.retain_data), (1,)).item()
                 idx = (idx + randint) % len(self.retain_data)
@@ -83,11 +82,6 @@ class UnlearningDataset(Dataset):
                     data_type == "forget":
                 x = {"question": data[idx]['question'],
                      "answer": "I don't know."}
-            elif self.hparams['align'] and data_type == "alignment":
-                answers = self.hparams['alignment_responses']
-                answer = np.random.choice(answers)
-                x = {"question": data[idx]['question'],
-                     "answer": answer}
             else:
                 x = {"question": data[idx]['question'],
                      "answer": data[idx]['answer']}
@@ -115,18 +109,11 @@ def data_collator_unlearning(samples):
     forget_questions = [sample[2] for sample in samples]
     forget_answers = [sample[3] for sample in samples]
     model_answers = [sample[4] for sample in samples]
-    alignment_samples = [sample[5] for sample in samples]
-    retain_samples = [sample[6] for sample in samples]
+    retain_samples = [sample[5] for sample in samples]
 
     res = []
-    for data_type in ["forget", "retain", "alignment"]:
-        if data_type == "forget":
-            data = forget_samples
-        elif data_type == "retain":
-            data = retain_samples
-        else:
-            data = alignment_samples
-
+    for data_type in ["forget", "retain"]:
+        data = forget_samples if data_type == "forget" else retain_samples
         input_ids = [torch.tensor(s['input_ids']) for s in data]
         labels = [torch.tensor(s['labels']) for s in data]
         attention_mask = [torch.tensor(s['attention_mask']) for s in data]

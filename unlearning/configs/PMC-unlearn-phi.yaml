@@ -18,14 +18,12 @@ hparams:
   unlearning_loss: "pmc"
   pmc_selection: "rouge_reward"
 
-  lambda_unlearning: 1.5
+  lambda: 1.5
   top_p: 0.95
   temperature: 1.25
   num_samples: 5
   num_epochs: 40
   min_len: 0
-
-  align: False
 
   batch_size: 16
   gradient_accumulation_steps: 4

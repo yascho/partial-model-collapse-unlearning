@@ -166,14 +166,28 @@ def extract(input_ids, labels, tokenizer):
     return questions, gt_answers
 
 
-def generate_answers(hparams, model, tokenizer, questions, num_samples):
+def generate_answers(hparams, model, tokenizer, questions, num_samples, prefill=False):
     inputs = encode_inference(hparams, tokenizer, questions)
+    input_ids = inputs.input_ids
+    attention_mask = inputs.attention_mask
 
     model.eval()
 
-    input_ids = inputs.input_ids.repeat_interleave(num_samples, dim=0)
-    attention_mask = inputs.attention_mask.repeat_interleave(
-        num_samples, dim=0)
+    if prefill:
+        prefill = tokenizer(
+            "The answer is: ",
+            padding=False,
+            return_tensors="pt",
+            add_special_tokens=False
+        ).to(hparams["device"])
+
+        input_ids = torch.cat([input_ids, prefill['input_ids'].repeat(
+            inputs['input_ids'].shape[0], 1)], dim=1)
+        attention_mask = torch.cat([attention_mask, prefill['attention_mask'].repeat(
+            inputs['attention_mask'].shape[0], 1)], dim=1)
+
+    input_ids = input_ids.repeat_interleave(num_samples, dim=0)
+    attention_mask = attention_mask.repeat_interleave(num_samples, dim=0)
 
     outputs = model.generate(
         input_ids,
