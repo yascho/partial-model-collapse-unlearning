@@ -8,7 +8,7 @@ Reference implementation of our partial model collapse unlearning method propose
 
 
 <center>
-      <img style="padding-top: 2%; padding-bottom: 2%; width:100%;" src="./logo.svg">
+      <img style="padding-top: 3%; padding-bottom: 4%; width:100%;" src="./logo.svg">
 </center>
 
 
