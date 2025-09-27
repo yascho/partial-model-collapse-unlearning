@@ -8,11 +8,11 @@ Reference implementation of our partial model collapse unlearning method propose
 
 
 <center>
-      <img style="padding-top: 3%; padding-bottom: 4%; width:100%;" src="./logo.svg">
+      <br><img style="width:100%;" src="./logo.svg">
 </center>
 
 
-**TL;DR**: Partial Model Collapse (PMC) enables effective LLM unlearning. By inducing model collapse *partially* for specific questions, PMC selectively erases information in a targeted way while preserving overall model utility. 
+<br>**TL;DR**: Partial Model Collapse (PMC) enables effective LLM unlearning. By inducing model collapse *partially* for specific questions, PMC selectively erases information in a targeted way while preserving overall model utility. 
 
 <p align="center">
 [ <a href='https://www.cs.cit.tum.de/daml/partial-model-collapse/'>Project page</a> | <a href='https://arxiv.org/pdf/2507.04219'>PDF</a> ]
