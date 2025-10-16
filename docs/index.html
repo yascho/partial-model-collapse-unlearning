@@ -136,9 +136,7 @@
 <hr>
 
   <div style="text-align: justify;">
-      <link rel="stylesheet" href="css/main.css" />
-
-<div style="text-align:right;"><i>October, 2025</i></div>
+      <div style="text-align:right;"><i>October, 2025</i></div>
 
 <h1 id="introduction">Introduction</h1>
 
@@ -444,7 +442,7 @@ Specific details are not available.</p>
   }};
 
   var dataLeft = [{x:bold_categories, y:currentY, type:'bar', marker:{color:'#425469'}}];
-  var dataRight = [{x:bold_categories, y:sampledY, type:'bar', marker:{color:'#0073b2'}, name:'Sampled data'},{x:bold_categories, y:originalY.map((v,i)=>retainIndices.includes(i)?v:0), type:'bar', marker:{color:'gray'}, name:'Retain data'}];
+  var dataRight = [{x:bold_categories, y:sampledY, type:'bar', marker:{color:'#0073b2'}, name:'Sampled balls'},{x:bold_categories, y:originalY.map((v,i)=>retainIndices.includes(i)?v:0), type:'bar', marker:{color:'gray'}, name:'Retain balls'}];
 
   Plotly.newPlot('partial-current-dist', dataLeft, layoutLeft);
   Plotly.newPlot('partial-sampled-counts', dataRight, layoutRight);
@@ -454,7 +452,7 @@ Specific details are not available.</p>
     // currentY = reinforceRetain(resampled, retainIndices, originalY);
     // currentY = normalize(currentY);
 
-    dataRight = [{x:bold_categories, y:sampledY, type:'bar', marker:{color:'#0073b2'}, name:'Sampled data'},{x:bold_categories, y:originalY.map((v,i)=>retainIndices.includes(i)?v:0), type:'bar', marker:{color:'gray'}, name:'Retain data'}];
+    dataRight = [{x:bold_categories, y:sampledY, type:'bar', marker:{color:'#0073b2'}, name:'Sampled balls'},{x:bold_categories, y:originalY.map((v,i)=>retainIndices.includes(i)?v:0), type:'bar', marker:{color:'gray'}, name:'Retain balls'}];
     Plotly.update('partial-sampled-counts', {y: [sampledY]}, {}, [0]);
     Plotly.relayout('partial-sampled-counts', {
       'yaxis.range': [0, Math.max(Math.max(...sampledY), 20)]
