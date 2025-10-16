@@ -1,0 +1,652 @@
+<!doctype html>
+<html lang="en">
+  <head>
+	<meta charset="utf-8" />
+	<meta http-equiv="x-ua-compatible" content="ie=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+      
+	<title>
+	  A gentle introduction to collapse-based machine unlearning
+	</title>
+
+	<!-- Begin Jekyll SEO tag v2.8.0 -->
+<meta name="generator" content="Jekyll v4.3.4" />
+<meta property="og:title" content="A gentle introduction to collapse-based machine unlearning" />
+<meta property="og:locale" content="en_US" />
+<link rel="canonical" href="https://partial-model-collapse-unlearning.github.io/" />
+<meta property="og:url" content="https://partial-model-collapse-unlearning.github.io/" />
+<meta property="og:site_name" content="A gentle introduction to collapse-based machine unlearning" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="A gentle introduction to collapse-based machine unlearning" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebSite","headline":"A gentle introduction to collapse-based machine unlearning","name":"A gentle introduction to collapse-based machine unlearning","url":"https://partial-model-collapse-unlearning.github.io/"}</script>
+<!-- End Jekyll SEO tag -->
+
+      
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<link rel="stylesheet" href="/css/main.css">
+	<link
+	  href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,700,800,600"
+	  rel="stylesheet"
+	  type="text/css"
+	/>
+	<link
+	  href="https://fonts.googleapis.com/css?family=Muli:400,300"
+	  rel="stylesheet"
+	  type="text/css"
+	/>
+
+	<script>
+	MathJax = {
+		tex: {
+		inlineMath: [['$', '$'], ['\\(', '\\)']],
+		displayMath: [['$$','$$'], ['\\[','\\]']]
+		},
+		options: {
+		skipHtmlTags: ['script','noscript','style','textarea','pre','code']
+		}
+	};
+	</script>
+	<script id="MathJax-script" async
+	src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+	</script>
+	<script src="https://cdn.plot.ly/plotly-3.1.0.min.js" charset="utf-8"></script>
+</head>
+  <body class="d-flex flex-column h-100">
+  <main class="container flex-shrink-0 p-0">
+      <article class="container">
+
+      <div class="title">A gentle introduction to collapse-based <br>machine unlearning</div>
+
+  <br>
+  Blogpost about the preprint:<br>
+  <a href="https://arxiv.org/pdf/2507.04219">Model Collapse Is Not a Bug but a Feature in Machine Unlearning for LLMs</a>
+  <br>
+  <a href="https://yascho.github.io/" target="_blank" >Yan Scholten</a>$^1$,
+  <a href="https://mila.quebec/en/directory/sophie-xhonneux" target="_blank">Sophie Xhonneux</a>$^2$,
+  <a href="https://schwinnl.github.io/" target="_blank">Leo Schwinn</a>$^{*,1}$,
+  and <a href="https://www.cs.cit.tum.de/daml/guennemann/" target="_blank">Stephan Günnemann</a>$^{*,1}$<br/>
+  <br>
+
+  <div style="display: flex; justify-content: space-between; margin-top: 0em;">
+  <div>$^1$ TUM<br>$^2$ Mila, Université de Montréal</div>
+  <!--<div><i>Correspondence to YS.</i></div>-->
+</div>
+    <br>
+  <div id="collapseGroup" class="mt-4">
+  <a class="btn btn-primary btn-sm collapsed" 
+      style="color:white;"
+    role="button" href="https://arxiv.org/pdf/2507.04219" target="_blank">
+    <b>&#9656; PDF</b>
+  </a>
+  <a class="btn btn-primary btn-sm collapsed" 
+      style="color:white;"
+    role="button" 
+    data-bs-toggle="collapse" 
+    data-bs-target="#abs"
+    aria-controls="abs">
+    <b>&#9656; Abstract</b>
+  </a>
+  <a class="btn btn-primary btn-sm collapsed" 
+      style="color:white;"
+    role="button" href="https://github.com/yascho/partial-model-collapse-unlearning" target="_blank">
+    <b>&#9656; Code</b>
+  </a>
+  <a class="btn btn-primary btn-sm collapsed" 
+      style="color:white;"
+    role="button" 
+    data-bs-toggle="collapse" 
+    data-bs-target="#bibtex"
+    aria-controls="bibtex">
+    <b>&#9656; Cite</b>
+  </a>
+
+  <div id="abs" class="collapse mt-2" data-bs-parent="#collapseGroup" style="text-align:justify;">
+    <p>Current unlearning methods for LLMs optimize on the private information they seek to remove by incorporating it into their fine-tuning data. We argue this not only risks reinforcing exposure to sensitive data, it also fundamentally contradicts the principle of minimizing its use. As a remedy, we propose a novel unlearning method - Partial Model Collapse (PMC), which does not require unlearning targets in the unlearning objective. Our approach is inspired by recent observations that training generative models on their own generations leads to distribution collapse, effectively removing information from model outputs. Our central insight is that model collapse can be leveraged for machine unlearning by deliberately triggering it for data we aim to remove. We theoretically analyze that our approach converges to the desired outcome, i.e. the model unlearns the data targeted for removal. We empirically demonstrate that PMC overcomes three key limitations of existing unlearning methods that explicitly optimize on unlearning targets, and more effectively removes private information from model outputs while preserving general model utility. Overall, our contributions represent an important step toward more comprehensive unlearning that aligns with real-world privacy constraints.</p>
+  </div>
+
+
+  <div id="bibtex" class="collapse mt-2" data-bs-parent="#collapseGroup" style="text-align:justify; position: relative;">
+    <!-- Copy Button -->
+    <button class="btn btn-sm btn-secondary" 
+            style="position: absolute; right: 0.5rem;" 
+            onclick="copyBibTeX()">
+      Copy
+    </button>
+
+    <br>
+    
+<figure class="highlight"><pre><code class="language-bibtex" data-lang="bibtex">  <span class="nc">@misc</span><span class="p">{</span><span class="nl">scholten2025modelcollapse</span><span class="p">,</span>
+    <span class="na">title</span><span class="p">=</span><span class="s">{Model Collapse Is Not a Bug but a Feature in Machine Unlearning for LLMs}</span><span class="p">,</span>
+    <span class="na">author</span><span class="p">=</span><span class="s">{Yan Scholten and Sophie Xhonneux and Leo Schwinn and Stephan Günnemann}</span><span class="p">,</span>
+    <span class="na">year</span><span class="p">=</span><span class="s">{2025}</span><span class="p">,</span>
+    <span class="na">eprint</span><span class="p">=</span><span class="s">{2507.04219}</span><span class="p">,</span>
+    <span class="na">archivePrefix</span><span class="p">=</span><span class="s">{arXiv}</span><span class="p">,</span>
+    <span class="na">primaryClass</span><span class="p">=</span><span class="s">{cs.LG}</span><span class="p">,</span>
+    <span class="na">url</span><span class="p">=</span><span class="s">{https://arxiv.org/abs/2507.04219}</span><span class="p">,</span>
+  <span class="p">}</span>
+    </code></pre></figure>
+
+  </div>
+
+
+
+  </div>
+<hr>
+
+  <div style="text-align: justify;">
+      <div style="text-align:right;"><i>October, 2025</i></div>
+
+<h1 id="introduction">Introduction</h1>
+
+<p>What happens when a new chatbot is released and it somehow knows where <em>you</em>, a private person, live? It should forget! But in the age of large language models (LLMs), that’s easier said than done. Completely retraining the model from scratch without the unwanted data would be far too slow and costly. This is what <strong>machine unlearning</strong> is trying to solve—an emerging field focused on making AI forget specific information efficiently, without a complete reset.</p>
+
+<p>Yet, for a while now, the most common methods have felt paradoxical in their approach to solve the unlearning problem. To make a model forget a secret, you had to show it that secret again and again during the unlearning process. It’s a bit like trying to forget a song by listening to it on repeat—probably not the most effective strategy, and it can even risk reinforcing the very information you’re trying to forget. So far, selective forgetting is a monumental task for AI.</p>
+
+<p>But here’s where the story becomes really interesting: While researchers have been struggling to make AI forget on command, they’ve also stumbled upon a phenomenon where models are forgetting all by themselves (unintentionally!). As the internet is getting flooded with AI-generated content, they’ve discovered that models repetitively trained on such synthetic data start to degrade in a process called <strong>model collapse</strong>.<sup id="fnref:1"><a href="#fn:1" class="footnote" rel="footnote" role="doc-noteref">1</a></sup> It’s a bit like making a copy of a copy—the quality can get worse over time.</p>
+
+<p>This brings us to critical questions at the heart of our research: Is targeted forgetting in machine unlearning as challenging as preventing unintentional forgetting in model collapse? Or can we actually trigger model collapse in a controlled way, turning this detrimental phenomenon to our advantage for machine unlearning?</p>
+
+<p>In this post, we’ll explore this exciting frontier pioneered in our recent preprint <a class="citation" href="#scholten2025modelcollapse">[1]</a>, suggesting that the problem of model collapse might just hold the solution for effective machine unlearning in LLMs and beyond.</p>
+
+<h1 id="from-model-collapse-to-machine-unlearning">From model collapse to machine unlearning</h1>
+
+<p>Let’s begin with a simple thought experiment to better understand the underlying principles of the model collapse phenomenon.</p>
+
+<p>Imagine a lottery machine filled with an equal mix of ten different colored balls. You draw 100 balls, record their colors, and get a pretty good picture of the original mix. Now, what if you took your results and used them to create a <em>new</em> lottery machine, stocking it with the exact number of colored balls you just drew? Then you repeat the process over and over. What happens?</p>
+
+<p>By pure chance, you might have drawn one color slightly more often than the others in your first iteration. In the next generation, that tiny fluke gets amplified. After a few rounds, that one color starts to dominate, pushing the others out. Eventually you’ll reach a point where the machine only contains balls of a single color, try it out yourself!</p>
+
+<p><br /></p>
+<style>
+button {
+    font-size: 0.9em;   /* slightly smaller text, including the arrows */
+    padding: 2px 8px;    /* reduce vertical and horizontal padding */
+    margin: 0px;         /* optional: small gap between buttons */
+}
+</style>
+
+<p><button id="collapse-sample">$\rightarrow$ Sample from machine</button>
+<button id="collapse-restock">$\leftarrow$ Restock machine</button>
+<button id="collapse-both">$\rightleftarrows$</button>
+<button id="collapse-animate">Animate $\rightleftarrows$</button>
+<button id="collapse-stop">Stop</button>
+<button id="collapse-limit">Limit</button>
+<button id="collapse-reset">Reset</button></p>
+<div style="display:flex; align-items:center; width:100%;">
+  <div id="current-dist" style="width:45%;"></div>
+  <div style="width:10%; text-align:center; font-size:30px; font-weight:bold;">$\rightleftarrows$</div>
+  <div id="sampled-counts" style="width:45%;"></div>
+</div>
+
+<p>This is model collapse in a nutshell. All the diversity and information of the original distribution is lost, collapsed to a single point in the limit. In the context of generative AI, this phenomenon was first discussed in a really interesting Nature paper <a class="citation" href="#shumailov2024ai">[2]</a>, arguing that the reason for the collapse are small statistical errors that build on each other in a one-way process; once a color is gone, it can never come back.</p>
+
+<p>This is certainly a huge problem for an internet increasingly filled with AI-generated content. However, luckily the story doesn’t end here. More recent research has found a potential solution in the context of image generation: if you mix a good amount of the original data back in with the synthetic data, you can prevent this collapse and keep the model’s performance stable <a class="citation" href="#bertrand2024stability">[3]</a><a class="citation" href="#ferbach2024self">[4]</a>. It seems the key is to keep AI grounded in reality, ensuring it doesn’t get lost in a world of its own creation.</p>
+
+<p>And this is also where our opportunity arises! If a total model collapse is caused by using 100% synthetic data, and stability is maintained by mixing in real data, what happens if we meet in the middle, mixing in only the data we want to retain? To explain it with the lottery machine, let’s consider the following process:</p>
+
+<p>First, you create a fixed “retain” set by taking the original mix of colors and removing the ones you want to forget—say, red, blue, and green. Then, you let the machine generate a fresh set of balls on its own. Finally, you set up the lottery machine for the next round according to the proportions of colors in the combined mix, formed by blending the retain set with the new generations.</p>
+
+<p>The result? By constantly re-introducing the colors we want to keep according to their original mix, they are protected from vanishing. The red, blue, and green balls, however, get no such reinforcement and vanish systematically over time.</p>
+
+<p>Try it out yourself! Below, “restock” refers to resetting the machine with the sampled balls (as before), and “restock with retain” refers to restocking the machine according to the color proportions in the combined set (sampled balls with retain balls).</p>
+
+<p><br />
+<button id="partial-collapse-resample">$\rightarrow$ Sample</button>
+<button id="partial-collapse-restock">Restock</button>
+<button id="partial-collapse-restock-retain">$\leftarrow$ Restock with retain</button>
+<button id="partial-collapse-both">$\rightleftarrows$</button>
+<button id="partial-collapse-animate">Animate $\rightleftarrows$</button>
+<button id="partial-collapse-stop">Stop</button>
+<button id="partial-collapse-limit">End</button>
+<button id="partial-collapse-reset">Reset</button></p>
+
+<div style="display:flex; align-items:center; width:100%;">
+  <div id="partial-current-dist" style="width:45%;"></div>
+  <div style="width:10%; text-align:center; font-size:30px; font-weight:bold;">$\rightleftarrows$</div>
+  <div id="partial-sampled-counts" style="width:45%;"></div>
+</div>
+
+<p>This is our central insight: The information we retain is anchored and preserved. But all other knowledge, which was not reinforced with real data, begins to fade away due to the collapse dynamics—the model forgets it. This is quite a powerful insight, since it suggests we can control model collapse and harness it for machine unlearning.  We call this phenomenon <em>partial model collapse</em> (PMC), reflecting that the distribution collapses only in part (on the data we want to unlearn).</p>
+
+<h1 id="partial-model-collapse-for-llm-unlearning">Partial model collapse for LLM unlearning</h1>
+
+<p>So, how can we make this work for large language models? While the idea of leveraging model collapse is promising, moving directly from our simple lottery machine to the complexities in large language models is a huge leap. While the core idea holds, we face three major hurdles in making it work for LLMs:</p>
+
+<p><em>First</em>, our lottery machine drew one colored ball to represent a single outcome. An LLM, in contrast, builds its answer word-by-word, like drawing a whole sequence of balls where each choice depends on the previous. This means we’re not just trying to make it forget one color: even for a single fact we have many sequences of colors to forget.</p>
+
+<p><em>Second</em>, LLM unlearning is typically studied for question answering, where the task is to unlearn answers to “forget” questions while preserving performance on all other remaining questions. This task demands quite some care: we need to erase one sequence while ensuring the model can still use the words correctly in thousands of other sequences.</p>
+
+<p><em>Third</em>, what should the model respond with after unlearning? In our lottery, the answer was simple—we were left with the colors we didn’t remove (the retain set). But for an LLM, we have to define a new, safe set of target responses. The problem is that the only way to know the perfect “I don’t know”-answers is to have another model that was never trained on the secret in the first place (which, of course, we don’t have access to).</p>
+
+<p>To navigate these challenges, we can make use of more advanced machinery originally developed to study model collapse in image generation: Specifically, we can build upon the finding that even iterative training on “curated” (filtered) self-generated data (a form of preference optimization) induces model collapse <a class="citation" href="#ferbach2024self">[4]</a>.</p>
+
+<p>In this work, we demonstrate how filtering of self-generated data can be repurposed for LLM unlearning by effectively guiding the unlearning process away from sensitive responses toward more desired ones, essentially using the mechanics of model collapse as a feature, not a bug, for targeted forgetting.</p>
+
+<p><strong>Partial model collapse using a preference model to guide the unlearning process.</strong>  The key idea is to sample responses from the model’s output distribution and to select the “best” response according to a preference model, e.g. based on dissimilarity to the model’s original response. This way, we can steer the model away from the sensitive information without optimizing on the ground truth unlearning targets, and without needing to know the perfect “I don’t know” answers ourselves.</p>
+
+<p>For example, imagine we want the model to forget the answer to the question “What is the name of Harry Potter’s owl?”. Here’s how PMC-unlearning works for this question:</p>
+
+<p><img src="assets/frame-figure0.svg" alt="Figure 1: Illustration" style="width: 100%; height: auto;" /></p>
+<ol>
+    <li>Generate alternative answers: Ask the model the sensitive question multiple times to get a variety of possible answers.</li>
+    <li>Rank the generated answers based on our preference, for example how dissimilar the answers are to the original response from the model.</li>
+    <li>Pick the "best" (most dissimilar) answer among the generated responses.</li>
+    <li>Fine-tune the LLM on this "best" alternative answer.</li>
+</ol>
+
+<p>To stabilize model utility in practice, we additionally fine-tune the model on answers to non-sensitive questions, i.e. questions whose answers we do not want to forget.<sup id="fnref:2"><a href="#fn:2" class="footnote" rel="footnote" role="doc-noteref">2</a></sup></p>
+
+<p><strong>Why does this process unlearn?</strong> By repeating this process, we’re not explicitly telling the model what not to respond. Instead, we’re encouraging it to favor alternative responses that it is already capable of generating. The theory suggests this process gradually causes the model’s answer to <em>collapse</em> onto these new, preferred answers, effectively erasing the original answer—similar to the collapse we observed in the simple lottery scenario before.</p>
+
+<h2 id="why-do-we-need-synthetic-responses">Why do we need synthetic responses?</h2>
+
+<p>At this point you’re probably wondering if the synthetic data is even necessary. With our lottery machine, if we wanted to forget the red and blue balls, we’d just… stop putting them in instead of drawing them from the lottery machine, right? So why not do the same for LLMs—why not just force it to answer “I don’t know” for every question we want it to forget the answer to?
+It seems so much simpler than generating all this synthetic data and should work as well, right? Well, not quite. The answer to this reveals why unlearning is so challenging for LLMs, and it comes down to two main reasons: one is about model utility, and the other about robustness.</p>
+
+<p><strong>Enforcing specific answers can break the model.</strong> The first problem is that forcing an LLM to output a single, rigid phrase like “I don’t know” is surprisingly disruptive. It’s like teaching a fluent speaker a new, awkward catchphrase and forcing them to use it constantly. It can mess up their natural flow and make them worse at conversation overall. In our experiments with LLMs, we found exactly this: while fine-tuning on a fixed “I don’t know” response seems to work on the first look, it comes at the cost of degrading the model’s general utility. Of course, we could try to fine-tune on more diverse “I don’t know” answers now, but this would require us to find the right answers to fine-tune on, and we want to avoid such manual work in the first place.</p>
+
+<p>In contrast, using the model’s own responses is a gentler path. The model already knows how to generate these phrases, so guiding it to use them more often is less disruptive and better preserves its overall capabilities.</p>
+
+<p><strong>Fine-tuning on fixed responses is only a superficial fix.</strong> The second reason is even more critical. As we demonstrated in a previous study <a class="citation" href="#scholten2025probabilistic">[5]</a>, unlearned models can still leak the seemingly unlearned secrets when asked multiple times. Simply training a model to say “I don’t know” is like putting a fresh coat of paint over a dark stain on a wall. It looks fixed at a glance, but the original mark might still lurk beneath the surface.</p>
+
+<p>Even worse than asking multiple times you can perform so-called “prefilling attacks.” This is like scratching the new paint to reveal what’s underneath. If you prompt the model with the sensitive question and give it the starting words “The answer is:”, it will simply bypass its new “I don’t know” answer and obediently complete the sentence with the very secret it was supposed to forget.
+This works because an LLM isn’t recalling facts from a database; it’s simply an incredibly powerful autocomplete—always predicting the most likely next word. By providing a different starting point, you push it off its new, safe path and right back to the old, familiar response it was originally trained on.</p>
+
+<div style="display: flex; justify-content: space-between; margin-top: 0em;">
+  <div style="flex: 2;">This is where Partial Model Collapse (PMC) proves its worth. It's not just painting over the underlying problem. It thoroughly changes the model's preferences for the entire set of answers, not just the first few tokens. The figure on the right shows this clearly. It measures worst-case (w.c.) "leakage" from different methods under prefilling attacks.
+  </div>
+  <div style="flex: 1;"><img src="assets/sampling.png" alt="Figure showing PMC has lower leakage under attacks compared to other methods." style="width: 100%; height: auto; padding-left: 1em;" /></div>
+</div>
+<p>As you can see, PMC is the first approach that remains significantly more robust, forgetting the sensitive response where other methods fail and still leak.</p>
+
+<h2 id="negative-side-effects-of-previous-methods">Negative side effects of previous methods</h2>
+
+<p>After all this you might still be wondering: what’s actually wrong with the previous way of doing unlearning—despite their paradox of needing to re-show the model the secret information? Well, by taking a closer look at these methods we reveal that directly optimizing on unlearning targets comes with at least two further, serious drawbacks.</p>
+
+<p><strong>Collateral capability damage.</strong> Imagine you want an LLM to unlearn the fact that “John Doe is a carpenter.” Obviously, unlearning should only affect the model’s response when asked about John Doe’s profession, not in all other contexts. However, many existing methods aren’t that precise. By directly penalizing the model for generating the word “carpenter” in that context, they inadvertently teach the model that the word “carpenter” is just inherently bad. As a result, the model can become less likely to use the word “carpenter” even in completely unrelated sentences, such as “They hired a carpenter to build a bookshelf.” Optimizing on the unlearning targets simply distorts the model’s general language capabilities, creating a kind of “collateral damage” far beyond the intended unlearning task.</p>
+
+<p><strong>New attack vectors.</strong> The second side effect is more subtle but just as critical. By aggressively training a model to avoid a specific answer, these methods unnaturally suppress the probability of that answer, often pushing it close to zero. While this sounds effective, it actually creates a new, predictable vulnerability: Adversaries can exploit this. Imagine you give the unlearned model a multiple-choice question where the unlearned fact is one of the options. The attacker can simply ask the model to evaluate the probability of each option and then select the one it claims is the least likely. In our work we show this is a remarkably effective attack. The unnatural suppression acts like a red flag, paradoxically allowing an attacker to identify the very information that was supposed to have been erased. Instead of truly unlearning, the model is essentially whispering the secret by shouting what it’s not supposed to say.</p>
+
+<p><strong>The underlying reason.</strong> These two side effects—damaging general knowledge and creating new attack vectors—are a direct consequence of optimizing on the unlearning targets. Optimizing on the sensitive information removes probability mass from the target without clear signal where to move this probability mass to—with poorly understood side effects that prevent effective information removal.</p>
+
+<p>In contrast, PMC directly tells the model where to concentrate the probability mass instead—with unlearning happening as a positive side-effect. By relying on the model’s own answers, PMC avoids the risk of re-exposing the model to sensitive information, making it a more secure and privacy-preserving method for machine unlearning.</p>
+
+<h1 id="partial-model-collapse-in-practice">Partial model collapse in practice</h1>
+
+<p>Enough with the theory—but does this actually work in practice? In our experiments, we find that partial model collapse is highly effective in unlearning responses to sensitive questions while preserving the model’s overall utility. We can observe how this unlearning process unfolds in three plots.</p>
+
+<p>First, the model quickly diverges from its original answer. By fine-tuning it on its own generated responses that are most dissimilar to the original, the overlap between the chosen response and the original one drops to zero within just 50 training steps:</p>
+
+<center>
+<div id="avg-rougeL" style="width:90%;height:auto;"></div>
+</center>
+
+<p>Second, the negative log-likelihood (a measure of how improbable the model finds an answer) of the ground truth answer under the model’s current distribution increases, indicating that the model is indeed unlearning. Notably, this forgetting happens without ever optimizing against such sensitive data:</p>
+
+<center>
+<div id="forget-loss" style="width:90%;height:auto;"></div>
+</center>
+
+<p>Finally, the model’s utility on benign questions is preserved. While there’s a brief, initial dip in performance, it quickly recovers—potentially indicating that training reaches a new mode not linearly connected to the original one:</p>
+
+<center>
+<div id="retain-loss" style="width:90%;height:auto;"></div>
+</center>
+
+<p>Interestingly, we observe that PMC-unlearning frequently converges toward response patterns that fall into three broad categories: (i) hallucinations, (ii) gibberish, or (iii) generic refusals that indicate the absence of knowledge. Examples of the latter include:</p>
+
+<blockquote>
+  <p>I don’t have any information available.<br />
+To be honest, I couldn’t find any information.<br />
+There is no public information.<br />
+This information is not available at this time.<br />
+Specific details are not available.</p>
+</blockquote>
+
+<p>Or, certainly one of my favorite answers we encountered during our research:</p>
+<blockquote>
+  <p>Aw, shucks, I’m just a language model.</p>
+</blockquote>
+
+<p>Looks like LLMs are actually getting shy when they forget their answers!</p>
+
+<p>But why do we actually observe this behavior? We never explicitly trained the model to prefer such refusal-style answers on our end. The reason, we believe, lies in an implicit bias from its original pre-training. Phrases like “I’m sorry, I cannot answer that” might be so common and generic in its vast dataset that they become a safe, high-probability fallback. When the LLM is penalized for providing its original answer, it could retreat to this safe harbor of polite refusal. However, this should be regarded as a hypothesis and requires further investigation in the future.</p>
+
+<p>Finally, we believe that the desired model behavior after unlearning is actually quite application-dependent. What constitutes an acceptable response may vary across different use-cases, and how to effectively align the model with our desired responses after unlearning remains an open research question.</p>
+
+<h1 id="conclusion">Conclusion</h1>
+
+<p>For a while, the quest for machine unlearning felt like trying to push a river upstream. The goal was to force a model to forget, but the methods required re-showing the model the secret it was meant to forget, leaving behind subtle, negative side effects. This research takes a different approach—we demonstrate that model collapse, long considered a problematic bug, is actually considerably useful for machine unlearning.</p>
+
+<p>The result is partial model collapse (PMC), a technique that leverages the model’s own natural drift toward information loss to erase specific information with surprising precision. It’s a cleaner and more principled approach that doesn’t need to touch the sensitive data during unlearning, avoiding the collateral damage and vulnerabilities of previous methods. By turning a known problem into a clever methodology, PMC takes a critical step toward more effective machine unlearning for generative AI, and opens up new exciting avenues for making AI more trustworthy.</p>
+
+<h1 id="bibliography">Bibliography</h1>
+<ol class="bibliography"><li><span id="scholten2025modelcollapse">[1]Y. Scholten, S. Xhonneux, L. Schwinn, and S. Günnemann, “Model Collapse Is Not a Bug but a Feature in Machine Unlearning for LLMs.” 2025, [Online]. Available at: https://arxiv.org/abs/2507.04219.</span></li>
+<li><span id="shumailov2024ai">[2]I. Shumailov, Z. Shumaylov, Y. Zhao, N. Papernot, R. Anderson, and Y. Gal, “AI models collapse when trained on recursively generated data,” <i>Nature</i>, vol. 631, no. 8022, pp. 755–759, 2024.</span></li>
+<li><span id="bertrand2024stability">[3]Q. Bertrand, A. J. Bose, A. Duplessis, M. Jiralerspong, and G. Gidel, “On the Stability of Iterative Retraining of Generative Models on their
+                  own Data,” 2024.</span></li>
+<li><span id="ferbach2024self">[4]D. Ferbach, Q. Bertrand, A. J. Bose, and G. Gidel, “Self-Consuming Generative Models with Curated Data Provably Optimize
+                  Human Preferences,” 2024.</span></li>
+<li><span id="scholten2025probabilistic">[5]Y. Scholten, S. Günnemann, and L. Schwinn, “A Probabilistic Perspective on Unlearning and Alignment for Large Language Models,” 2025.</span></li></ol>
+
+<hr />
+<p><strong>Footnotes:</strong></p>
+
+<script>
+  function toNum(value) {
+    return Number(value.replace(/"/g, "").trim());
+  }
+
+  function plotLossCurve(csvPath, divId, title) {
+    fetch(csvPath)
+      .then(response => response.text())
+      .then(text => {
+        const rows = text.trim().split("\n").map(r => r.split(","));
+
+        const x = [];
+        const y = [];
+
+        for (let i = 0; i < rows.length; i++) {
+          const cols = rows[i];
+          if (cols.length > 4) {
+            const step = toNum(cols[0]);   // step at col 0
+            const loss = toNum(cols[4]);   // loss at col 4
+            if (!isNaN(step) && !isNaN(loss)) {
+              x.push(step);
+              y.push(loss);
+            }
+          }
+        }
+
+        const trace = {
+          x: x,
+          y: y,
+          mode: 'lines',
+          name: 'Loss',
+          line: { color: '#568dcc' } 
+        };
+
+        const layout = {
+          title: {
+            text: title,
+            font: { size: 20, color: "#333" },
+            x: 0.5,   // center the title
+            xanchor: "center",
+            pad: { t: 30, b: 0 } 
+          },
+          margin: { t: 80 },
+            xaxis: {
+              title: {
+                text: 'Training steps',
+                font: { size: 14, color: '#333' },
+                standoff: 0   // reduce distance from axis
+              },
+              automargin: true
+            },
+          yaxis: { title: 'Loss' },
+        };
+
+        Plotly.newPlot(divId, [trace], layout);
+      });
+  }
+
+  plotLossCurve("assets/forget-loss.csv", "forget-loss", "Forget loss");
+  plotLossCurve("assets/retain-loss.csv", "retain-loss", "Retain loss");
+  plotLossCurve("assets/avg-rougeL.csv", "avg-rougeL", "Average ROUGE-L (initial vs. current model output)");
+</script>
+
+<script>
+// ==================== Example 1: retain + forget (10 categories) ====================
+(function(){
+  var bold_categories = ['red','blue','green','<b>yellow</b>','<b>purple</b>','<b>orange</b>','<b>pink</b>','<b>brown</b>','<b>black</b>','<b>white</b>'];
+  var categories = ['red','blue','green','yellow','purple','orange','pink','brown','black','white'];
+  var originalY = [5,10,20,15,10,10,5,10,10,5];
+  var retainIndices = [3,4,5,6,7,8,9]; // reinforced
+  var init = [0,0,0,0,0,0,0,0,0,0];
+  var currentY = normalize(originalY.slice());
+  var sampledY = init.slice();
+  var animationInterval = null;
+
+  function normalize(arr){
+    let s=arr.reduce((a,b)=>a+b,0);
+    return arr.map(v=>v/s);
+  }
+
+  function resampleCounts(probs){
+    let newCounts = Array(probs.length).fill(0);
+    for(let i=0;i<100;i++){
+      let r=Math.random(), cum=0;
+      for(let j=0;j<probs.length;j++){
+        cum+=probs[j];
+        if(r<cum){newCounts[j]++; break;}
+      }
+    }
+    return newCounts;
+  }
+
+  function reinforceRetain(resampled, retainIdx, original){
+    let reinforced = resampled.slice();
+    retainIdx.forEach(i=>reinforced[i]+=original[i]);
+    return reinforced;
+  }
+
+  var layoutLeft = {title: {text: 'Current distribution in lottery machine', font: {size: 16}}, margin: { t: 80, l: 30, r: 30 }};
+  var layoutRight = {title: {text: 'Observed balls', font: {size: 16}}, margin: { t: 80, l: 30, r: 30 }, yaxis: {range: [0, 20]}, showlegend: true,   legend: {
+    x: 0.52,        // horizontal position (0 = left, 1 = right)
+    y: 1,        // vertical position (0 = bottom, 1 = top)
+    xanchor: 'left',
+    yanchor: 'top',
+    bgcolor: 'rgba(255,255,255,0.6)'  // semi-transparent background
+  }};
+
+  var dataLeft = [{x:bold_categories, y:currentY, type:'bar', marker:{color:'#425469'}}];
+  var dataRight = [{x:bold_categories, y:sampledY, type:'bar', marker:{color:'#0073b2'}, name:'Sampled data'},{x:bold_categories, y:originalY.map((v,i)=>retainIndices.includes(i)?v:0), type:'bar', marker:{color:'gray'}, name:'Retain data'}];
+
+  Plotly.newPlot('partial-current-dist', dataLeft, layoutLeft);
+  Plotly.newPlot('partial-sampled-counts', dataRight, layoutRight);
+
+  function resample(){
+    sampledY = resampleCounts(currentY);
+    // currentY = reinforceRetain(resampled, retainIndices, originalY);
+    // currentY = normalize(currentY);
+
+    dataRight = [{x:bold_categories, y:sampledY, type:'bar', marker:{color:'#0073b2'}, name:'Sampled data'},{x:bold_categories, y:originalY.map((v,i)=>retainIndices.includes(i)?v:0), type:'bar', marker:{color:'gray'}, name:'Retain data'}];
+    Plotly.update('partial-sampled-counts', {y: [sampledY]}, {}, [0]);
+    Plotly.relayout('partial-sampled-counts', {
+      'yaxis.range': [0, Math.max(Math.max(...sampledY), 20)]
+    });
+  }
+
+  function restockRetain() {
+    if(sampledY.reduce((a,b)=>a+b,0)>0) currentY = sampledY.slice();
+    currentY = reinforceRetain(currentY, retainIndices, originalY);
+    currentY = normalize(currentY);
+    Plotly.update('partial-current-dist',{y:[currentY]});
+  }
+
+  function updateBoth(){
+    resample();
+    restockRetain();
+  }
+
+  document.getElementById("partial-collapse-reset").addEventListener("click", function(){
+    currentY = normalize(originalY.slice());
+    sampledY = init.slice();
+    Plotly.update('partial-current-dist',{y:[currentY]});
+    Plotly.update('partial-sampled-counts',{y:[sampledY]}, {yaxis: {range: [0, 20]}}, [0]);
+    if(animationInterval) clearInterval(animationInterval);
+  });
+
+  document.getElementById("partial-collapse-resample").addEventListener("click", function(){
+    resample();
+    if(animationInterval) clearInterval(animationInterval);
+  });
+
+  document.getElementById("partial-collapse-restock").addEventListener("click", function(){
+    if(sampledY.reduce((a,b)=>a+b,0)>0) currentY = sampledY.slice();
+    currentY = normalize(currentY);
+    Plotly.update('partial-current-dist',{y:[currentY]});
+    if(animationInterval) clearInterval(animationInterval);
+  });
+
+  document.getElementById("partial-collapse-restock-retain").addEventListener("click", function(){
+    restockRetain();
+    if(animationInterval) clearInterval(animationInterval);
+  });
+
+  document.getElementById("partial-collapse-both").addEventListener("click", function(){
+    updateBoth();
+    if(animationInterval) clearInterval(animationInterval);
+  });
+
+  document.getElementById("partial-collapse-stop").addEventListener("click", function(){
+    if(animationInterval) clearInterval(animationInterval);
+  });
+
+  document.getElementById("partial-collapse-animate").addEventListener("click", function(){
+    if(animationInterval) clearInterval(animationInterval);
+    animationInterval = setInterval(updateBoth,300);
+  });
+
+  document.getElementById("partial-collapse-limit").addEventListener("click", function(){
+    if(animationInterval) clearInterval(animationInterval);
+    // run until all forget categories are zero
+    while(currentY.filter((v,i)=>!retainIndices.includes(i)&&v>0).length>0){
+      let resampled = resampleCounts(currentY);
+      currentY = reinforceRetain(resampled, retainIndices, originalY);
+      currentY = normalize(currentY);
+    }
+    updateBoth();
+  });
+
+})();
+
+// ==================== Example 2: full categories ====================
+(function(){
+  var categories = ['red','blue','green','yellow','purple','orange','pink','brown','black','white'];
+  var originalY = [5,10,20,15,10,10,5,10,10,5];
+  var init = [0,0,0,0,0,0,0,0,0,0];
+  var currentY = originalY.slice();
+  var sampledY = init.slice();
+  var animationInterval = null;
+
+  function resampleCounts(counts){
+    let total = counts.reduce((a,b)=>a+b,0);
+    if(total===0) return counts.slice();
+    let probs = counts.map(c=>c/total);
+    let newCounts = Array(counts.length).fill(0);
+    for(let i=0;i<total;i++){
+      let r=Math.random(), cum=0;
+      for(let j=0;j<probs.length;j++){
+        cum+=probs[j];
+        if(r<cum){newCounts[j]++; break;}
+      }
+    }
+    return newCounts;
+  }
+
+  var layoutLeft = {title: {text: 'Current distribution in lottery machine', font: {size: 16}}, margin: { t: 80, l: 30, r: 30 }};
+  var layoutRight = {title: {text: 'Sampled balls', font: {size: 16}}, margin: { t: 80, l: 30, r: 30 }, yaxis: {range: [0, 100]}};
+
+  var dataLeft = [{x:categories, y:currentY.map(v => v / 100), type:'bar', marker:{color:'#425469'}}];
+  var dataRight = [{x:categories, y:sampledY, type:'bar', marker:{color:'#0073b2'}}];
+
+  Plotly.newPlot('current-dist', dataLeft, layoutLeft);
+  Plotly.newPlot('sampled-counts', dataRight, layoutRight);
+
+  function resample(){
+    sampledY = resampleCounts(currentY);
+    Plotly.update('sampled-counts',{y:[sampledY]}, {yaxis: {range: [0, Math.max(sampledY)]}});
+  }
+
+  function restock(){
+    currentY = sampledY.slice();
+    data = currentY.map(v => v / 100);
+    Plotly.update('current-dist',{y:[data]});
+  }
+
+  function updateBoth(){
+    resample();
+    restock();
+  }
+
+  document.getElementById("collapse-reset").addEventListener("click", function(){
+    currentY = originalY.slice();
+    data = currentY.map(v => v / 100);
+    Plotly.update('current-dist',{y:[data]});
+
+    sampledY = init.slice();
+    Plotly.update('sampled-counts',{y:[sampledY]}, {yaxis: {range: [0, 100]}});
+    if(animationInterval) clearInterval(animationInterval);
+  });
+
+  document.getElementById("collapse-both").addEventListener("click", function(){
+    updateBoth();
+    if(animationInterval) clearInterval(animationInterval);
+  });
+
+  document.getElementById("collapse-restock").addEventListener("click", function(){
+    if(sampledY.reduce((a,b)=>a+b,0)>0) restock();
+    if(animationInterval) clearInterval(animationInterval);
+  });
+
+  document.getElementById("collapse-sample").addEventListener("click", function(){
+    resample();
+    if(animationInterval) clearInterval(animationInterval);
+  });
+
+  document.getElementById("collapse-animate").addEventListener("click", function(){
+    if(animationInterval) clearInterval(animationInterval);
+    animationInterval = setInterval(updateBoth, 300);
+  });
+
+  document.getElementById("collapse-stop").addEventListener("click", function(){
+    if(animationInterval) clearInterval(animationInterval);
+  });
+
+  document.getElementById("collapse-limit").addEventListener("click", function(){
+    if(animationInterval) clearInterval(animationInterval);
+    while(currentY.filter(v=>v>0).length>1){
+      currentY = resampleCounts(currentY);
+    }
+    updateBoth();
+  });
+
+
+})();
+</script>
+
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:1">
+      <p>Note that we consider model collapse as the collapse of the model’s output distribution, not the collapse of the model’s overall utility as sometimes used in the unlearning context. <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:2">
+      <p>Note that while for our simple lottery example there is only one type of “retain” data (the colors we don’t remove), there are two types of “retain” data for LLMs: (1) the benign responses to sensitive questions (corresponding to the retain colors in our lottery example), and (2) the non-sensitive questions and answers we additionally fine-tune on. Previously, only the non-sensitive questions and answers have been called “retain data” in machine unlearning. <a href="#fnref:2" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+
+
+  </div>
+  
+  </article>
+  </main>
+
+  <script>
+  function copyBibTeX() {
+    // Get the code content inside the highlight block
+    const codeBlock = document.querySelector('#bibtex pre');
+    const text = codeBlock.innerText;
+    
+    navigator.clipboard.writeText(text)
+  }
+  </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+  </body>
+
+</html>

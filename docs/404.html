@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+  <head>
+	<meta charset="utf-8" />
+	<meta http-equiv="x-ua-compatible" content="ie=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+      
+	<title>
+	  A gentle introduction to collapse-based machine unlearning
+	</title>
+
+	<!-- Begin Jekyll SEO tag v2.8.0 -->
+<meta name="generator" content="Jekyll v4.3.4" />
+<meta property="og:title" content="A gentle introduction to collapse-based machine unlearning" />
+<meta property="og:locale" content="en_US" />
+<link rel="canonical" href="http://localhost:4000/404.html" />
+<meta property="og:url" content="http://localhost:4000/404.html" />
+<meta property="og:site_name" content="A gentle introduction to collapse-based machine unlearning" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="A gentle introduction to collapse-based machine unlearning" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","headline":"A gentle introduction to collapse-based machine unlearning","url":"http://localhost:4000/404.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+      
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<link rel="stylesheet" href="/css/main.css">
+	<link
+	  href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,700,800,600"
+	  rel="stylesheet"
+	  type="text/css"
+	/>
+	<link
+	  href="https://fonts.googleapis.com/css?family=Muli:400,300"
+	  rel="stylesheet"
+	  type="text/css"
+	/>
+
+	<script>
+	MathJax = {
+		tex: {
+		inlineMath: [['$', '$'], ['\\(', '\\)']],
+		displayMath: [['$$','$$'], ['\\[','\\]']]
+		},
+		options: {
+		skipHtmlTags: ['script','noscript','style','textarea','pre','code']
+		}
+	};
+	</script>
+	<script id="MathJax-script" async
+	src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+	</script>
+	<script src="https://cdn.plot.ly/plotly-3.1.0.min.js" charset="utf-8"></script>
+</head>
+  <body class="d-flex flex-column h-100">
+  <main class="container flex-shrink-0 p-0">
+      <article class="container">
+
+      <div class="title">A gentle introduction to collapse-based <br>machine unlearning</div>
+
+  <br>
+  Blogpost about the preprint:<br>
+  <a href="https://arxiv.org/pdf/2507.04219">Model Collapse Is Not a Bug but a Feature in Machine Unlearning for LLMs</a>
+  <br>
+  <a href="https://yascho.github.io/" target="_blank" >Yan Scholten</a>$^1$,
+  <a href="https://mila.quebec/en/directory/sophie-xhonneux" target="_blank">Sophie Xhonneux</a>$^2$,
+  <a href="https://schwinnl.github.io/" target="_blank">Leo Schwinn</a>$^{*,1}$,
+  and <a href="https://www.cs.cit.tum.de/daml/guennemann/" target="_blank">Stephan Günnemann</a>$^{*,1}$<br/>
+  <br>
+
+  <div style="display: flex; justify-content: space-between; margin-top: 0em;">
+  <div>$^1$ TUM<br>$^2$ Mila, Université de Montréal</div>
+  <!--<div><i>Correspondence to YS.</i></div>-->
+</div>
+    <br>
+  <div id="collapseGroup" class="mt-4">
+  <a class="btn btn-primary btn-sm collapsed" 
+      style="color:white;"
+    role="button" href="https://arxiv.org/pdf/2507.04219" target="_blank">
+    <b>&#9656; PDF</b>
+  </a>
+  <a class="btn btn-primary btn-sm collapsed" 
+      style="color:white;"
+    role="button" 
+    data-bs-toggle="collapse" 
+    data-bs-target="#abs"
+    aria-controls="abs">
+    <b>&#9656; Abstract</b>
+  </a>
+  <a class="btn btn-primary btn-sm collapsed" 
+      style="color:white;"
+    role="button" href="https://github.com/yascho/partial-model-collapse-unlearning" target="_blank">
+    <b>&#9656; Code</b>
+  </a>
+  <a class="btn btn-primary btn-sm collapsed" 
+      style="color:white;"
+    role="button" 
+    data-bs-toggle="collapse" 
+    data-bs-target="#bibtex"
+    aria-controls="bibtex">
+    <b>&#9656; Cite</b>
+  </a>
+
+  <div id="abs" class="collapse mt-2" data-bs-parent="#collapseGroup" style="text-align:justify;">
+    <p>Current unlearning methods for LLMs optimize on the private information they seek to remove by incorporating it into their fine-tuning data. We argue this not only risks reinforcing exposure to sensitive data, it also fundamentally contradicts the principle of minimizing its use. As a remedy, we propose a novel unlearning method - Partial Model Collapse (PMC), which does not require unlearning targets in the unlearning objective. Our approach is inspired by recent observations that training generative models on their own generations leads to distribution collapse, effectively removing information from model outputs. Our central insight is that model collapse can be leveraged for machine unlearning by deliberately triggering it for data we aim to remove. We theoretically analyze that our approach converges to the desired outcome, i.e. the model unlearns the data targeted for removal. We empirically demonstrate that PMC overcomes three key limitations of existing unlearning methods that explicitly optimize on unlearning targets, and more effectively removes private information from model outputs while preserving general model utility. Overall, our contributions represent an important step toward more comprehensive unlearning that aligns with real-world privacy constraints.</p>
+  </div>
+
+
+  <div id="bibtex" class="collapse mt-2" data-bs-parent="#collapseGroup" style="text-align:justify; position: relative;">
+    <!-- Copy Button -->
+    <button class="btn btn-sm btn-secondary" 
+            style="position: absolute; right: 0.5rem;" 
+            onclick="copyBibTeX()">
+      Copy
+    </button>
+
+    <br>
+    <figure class="highlight"><pre><code class="language-bibtex" data-lang="bibtex">  <span class="nc">@misc</span><span class="p">{</span><span class="nl">scholten2025modelcollapse</span><span class="p">,</span>
+    <span class="na">title</span><span class="p">=</span><span class="s">{Model Collapse Is Not a Bug but a Feature in Machine Unlearning for LLMs}</span><span class="p">,</span>
+    <span class="na">author</span><span class="p">=</span><span class="s">{Yan Scholten and Sophie Xhonneux and Leo Schwinn and Stephan Günnemann}</span><span class="p">,</span>
+    <span class="na">year</span><span class="p">=</span><span class="s">{2025}</span><span class="p">,</span>
+    <span class="na">eprint</span><span class="p">=</span><span class="s">{2507.04219}</span><span class="p">,</span>
+    <span class="na">archivePrefix</span><span class="p">=</span><span class="s">{arXiv}</span><span class="p">,</span>
+    <span class="na">primaryClass</span><span class="p">=</span><span class="s">{cs.LG}</span><span class="p">,</span>
+    <span class="na">url</span><span class="p">=</span><span class="s">{https://arxiv.org/abs/2507.04219}</span><span class="p">,</span>
+  <span class="p">}</span>
+    </code></pre></figure>
+  </div>
+
+
+
+  </div>
+<hr>
+
+  <div style="text-align: justify;">
+      <div class="container">
+  <h1>404</h1>
+
+  <p><strong>Page not found :(</strong></p>
+  <p>The requested page could not be found.</p>
+</div>
+
+  </div>
+  
+  </article>
+  </main>
+
+  <script>
+  function copyBibTeX() {
+    // Get the code content inside the highlight block
+    const codeBlock = document.querySelector('#bibtex pre');
+    const text = codeBlock.innerText;
+    
+    navigator.clipboard.writeText(text)
+  }
+  </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+  </body>
+
+</html>
